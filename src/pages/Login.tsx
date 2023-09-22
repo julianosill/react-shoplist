@@ -1,20 +1,23 @@
-import { ChangeEvent, useCallback, useEffect, useState } from 'react'
+import {
+  ChangeEvent,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from 'react'
+import { AuthContext } from '../contexts/auth'
 
 import { Input } from '../components/Input'
 import { Button } from '../components/Button'
 import { ErrorMessage } from '../components/ErrorMessage'
 
 import { Mail, Lock, Eye, EyeOff, LogIn, RefreshCw } from 'lucide-react'
-import logo from '../../public/logo.svg'
+import logo from '../assets/logo.svg'
 
 export default function Login() {
-  const [user, setUser] = useState({
-    email: '',
-    password: '',
-  })
+  const { user, setUser, loadingAuth, login } = useContext(AuthContext)
   const [hiddenPassword, setHiddenPassword] = useState(true)
   const [disableButton, setDisableButton] = useState(true)
-  const loadingAuth = false
   const [error, setError] = useState({
     mail: '',
     password: '',
@@ -78,7 +81,7 @@ export default function Login() {
               hasIcon={true}
             />
             <a
-              className="absolute cursor-pointer h-full px-4 top-0 right-0 flex flex-col justify-center"
+              className="absolute cursor-pointer h-12 px-4 top-0 right-0 flex flex-col justify-center"
               title="Show password"
               onClick={toggleHiddenPassword}
             >
@@ -97,7 +100,11 @@ export default function Login() {
             <ErrorMessage message={error.generic} warning={true} />
           )}
           <div className="mt-4">
-            <Button hasIcon={true} disabled={disableButton || loadingAuth}>
+            <Button
+              hasIcon={true}
+              disabled={disableButton || loadingAuth}
+              onClick={login}
+            >
               {loadingAuth ? (
                 <>
                   <RefreshCw size={22} className="animate-spin" />
