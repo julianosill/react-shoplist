@@ -12,9 +12,9 @@ export default function Login() {
   const loadingAuth = false
 
   const error = {
-    // mail: 'E-mail not found.',
-    // password: 'Password incorrect.',
-    // generic: 'Something went wrong. Please, contact our support team.',
+    mail: '',
+    password: '',
+    generic: '',
   }
 
   return (
