@@ -5,6 +5,7 @@ import { Button } from '../components/Button'
 import { ErrorMessage } from '../components/ErrorMessage'
 
 import { Mail, Lock, Eye, EyeOff, LogIn, RefreshCw } from 'lucide-react'
+import logo from '../../public/logo.svg'
 
 export default function Login() {
   const [hiddenPassword, setHiddenPassword] = useState(true)
@@ -20,6 +21,7 @@ export default function Login() {
   return (
     <main className="w-full min-h-screen flex flex-col justify-center items-center bg-slate-600">
       <section className="w-10/12 max-w-lg p-12 rounded-xl bg-white shadow-xl shadow-slate-700">
+        <img src={logo} alt="SHOPLIST" className="w-56 mx-auto mb-14" />
         <form className="flex flex-col gap-6 items-center">
           <div className="w-full relative">
             <Mail size={22} className="absolute h-12 left-4 text-slate-300" />
