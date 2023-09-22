@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { ChangeEvent, useCallback, useEffect, useState } from 'react'
 
 import { Input } from '../components/Input'
 import { Button } from '../components/Button'
@@ -8,15 +8,47 @@ import { Mail, Lock, Eye, EyeOff, LogIn, RefreshCw } from 'lucide-react'
 import logo from '../../public/logo.svg'
 
 export default function Login() {
+  const [user, setUser] = useState({
+    email: '',
+    password: '',
+  })
   const [hiddenPassword, setHiddenPassword] = useState(true)
   const [disableButton, setDisableButton] = useState(true)
   const loadingAuth = false
-
-  const error = {
+  const [error, setError] = useState({
     mail: '',
     password: '',
     generic: '',
+  })
+
+  const toggleHiddenPassword = () => setHiddenPassword(!hiddenPassword)
+
+  const handleChangeInput = (e: ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target
+    setUser({
+      ...user,
+      [name]: value,
+    })
   }
+
+  const checkPasswordLength = useCallback(() => {
+    !user.email || user.password.length < 6
+      ? setDisableButton(true)
+      : setDisableButton(false)
+    user.password.length > 0 && user.password.length < 6
+      ? setError({
+          ...error,
+          password: 'Password must be more than 6 digits.',
+        })
+      : setError({
+          ...error,
+          password: '',
+        })
+  }, [user])
+
+  useEffect(() => {
+    checkPasswordLength()
+  }, [user, checkPasswordLength])
 
   return (
     <main className="w-full min-h-screen py-8 flex flex-col justify-center items-center bg-slate-600">
@@ -28,6 +60,8 @@ export default function Login() {
             <Input
               name="email"
               type="email"
+              value={user.email}
+              onChange={handleChangeInput}
               placeholder="E-mail"
               hasIcon={true}
             />
@@ -38,12 +72,15 @@ export default function Login() {
             <Input
               name="password"
               type={hiddenPassword ? 'password' : 'type'}
+              value={user.password}
+              onChange={handleChangeInput}
               placeholder="Password"
               hasIcon={true}
             />
             <a
               className="absolute cursor-pointer h-full px-4 top-0 right-0 flex flex-col justify-center"
               title="Show password"
+              onClick={toggleHiddenPassword}
             >
               {hiddenPassword ? (
                 <EyeOff
