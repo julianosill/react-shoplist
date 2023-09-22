@@ -15,14 +15,10 @@ import { Mail, Lock, Eye, EyeOff, LogIn, RefreshCw } from 'lucide-react'
 import logo from '../assets/logo.svg'
 
 export default function Login() {
-  const { user, setUser, loadingAuth, login } = useContext(AuthContext)
+  const { user, setUser, login, loadingAuth, authError, setAuthError } =
+    useContext(AuthContext)
   const [hiddenPassword, setHiddenPassword] = useState(true)
   const [disableButton, setDisableButton] = useState(true)
-  const [error, setError] = useState({
-    mail: '',
-    password: '',
-    generic: '',
-  })
 
   const toggleHiddenPassword = () => setHiddenPassword(!hiddenPassword)
 
@@ -39,12 +35,12 @@ export default function Login() {
       ? setDisableButton(true)
       : setDisableButton(false)
     user.password.length > 0 && user.password.length < 6
-      ? setError({
-          ...error,
+      ? setAuthError({
+          ...authError,
           password: 'Password must be more than 6 digits.',
         })
-      : setError({
-          ...error,
+      : setAuthError({
+          ...authError,
           password: '',
         })
   }, [user])
@@ -68,7 +64,7 @@ export default function Login() {
               placeholder="E-mail"
               hasIcon={true}
             />
-            {error.mail && <ErrorMessage message={error.mail} />}
+            {authError.email && <ErrorMessage message={authError.email} />}
           </div>
           <div className="w-full relative">
             <Lock size={22} className="absolute h-12 left-4 text-slate-300" />
@@ -94,10 +90,12 @@ export default function Login() {
                 <Eye size={22} className="text-teal-500" />
               )}
             </a>
-            {error.password && <ErrorMessage message={error.password} />}
+            {authError.password && (
+              <ErrorMessage message={authError.password} />
+            )}
           </div>
-          {error.generic && (
-            <ErrorMessage message={error.generic} warning={true} />
+          {authError.general && (
+            <ErrorMessage message={authError.general} warning={true} />
           )}
           <div className="mt-4">
             <Button
