@@ -14,7 +14,7 @@ export function Button({
   const iconClasses = 'flex items-center gap-3'
   return (
     <button
-      className={`${width} h-12 px-12 rounded-md bg-teal-500 text-white hover:bg-teal-600 transition ease-in-out ${disabledClasses} ${
+      className={`${width} h-12 px-12 rounded-md bg-teal-500 text-white hover:bg-teal-600 focus:outline-teal-500 outline-offset-4 transition ease-in-out ${disabledClasses} ${
         hasIcon && iconClasses
       }`}
       {...props}
