@@ -1,4 +1,6 @@
 import { ChangeEvent, FormEvent, MouseEvent, useEffect, useState } from 'react'
+import { db } from '../services/firebaseConnection'
+import { collection, doc, getDocs, addDoc, deleteDoc } from 'firebase/firestore'
 
 import { Button } from '../components/Button'
 import { Input } from '../components/Input'
@@ -18,6 +20,7 @@ interface Product {
   id?: string
   name?: string
   category?: string
+  created?: Date
 }
 
 const listExample = [
@@ -38,8 +41,22 @@ export default function List() {
     category: '',
   })
 
-  function getList() {
-    setList(listExample)
+  async function getList() {
+    const productsRef = collection(db, 'market')
+    await getDocs(productsRef)
+      .then((snapshot) => {
+        const items: object[] = []
+        snapshot.forEach((doc) => {
+          items.push({
+            id: doc.id,
+            name: doc.data().name,
+            category: doc.data().category,
+            created: doc.data().created,
+          })
+        })
+        setList(items)
+      })
+      .catch((error) => console.log(error))
   }
 
   function getCategories() {
