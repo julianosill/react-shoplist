@@ -2,14 +2,25 @@ import { ComponentProps } from 'react'
 
 export type ButtonProps = ComponentProps<'button'> & {
   width?: string
-  hasIcon?: boolean
+  variant?: 'default' | 'outline'
 }
 
-export function Button({ width = 'w-fit', ...props }: ButtonProps) {
-  const disabledClasses = 'disabled:opacity-50 disabled:hover:bg-teal-500'
+const buttonVariants = {
+  base: 'h-12 px-8 flex justify-center items-center gap-3 rounded-md focus:outline-slate-700 outline-offset-4',
+  default: 'text-white bg-teal-500 hover:bg-teal-600',
+  outline:
+    'text-teal-500 border-2 border-teal-500 hover:text-slate-700 hover:border-slate-700',
+  disabled: 'disabled:opacity-50',
+}
+
+export function Button({
+  width = 'w-fit',
+  variant = 'default',
+  ...props
+}: ButtonProps) {
   return (
     <button
-      className={`${width} h-12 px-12 flex justify-center items-center gap-3 rounded-md bg-teal-500 text-white hover:bg-teal-600 focus:outline-teal-500 outline-offset-4 transition ease-in-out ${disabledClasses}`}
+      className={`${width} ${buttonVariants[variant]} ${buttonVariants['base']} ${buttonVariants['disabled']}`}
       {...props}
     />
   )
