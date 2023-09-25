@@ -71,7 +71,18 @@ export default function List() {
 
   function addItem(e: FormEvent<HTMLFormElement>) {
     e.preventDefault()
-    console.log(product)
+    if (!product?.category) {
+      console.log('Category is empty')
+      return
+    }
+    const newList = list
+    newList?.push({
+      id: '55',
+      name: product.name,
+      category: product.category,
+    })
+    setList([...newList])
+    console.log(newList)
   }
 
   useEffect(() => {
@@ -99,24 +110,30 @@ export default function List() {
                   {list &&
                     list.map((item) => {
                       if (item.category === cat) {
+                        const isSelected = selectedItems.includes(item.id)
                         return (
                           <li
                             key={item.id}
-                            className="px-4 flex justify-between items-center border-b last:border-0 border-slate-600"
+                            className={`px-4 flex justify-between items-center rounded-lg border-b last:border-0 border-slate-600/50 hover:bg-slate-800/50 ${
+                              isSelected && 'bg-slate-800/30'
+                            }`}
                           >
-                            <label htmlFor={item.id} className="flex-1 py-4">
+                            <label
+                              htmlFor={item.id}
+                              className="flex-1 py-4 cursor-pointer"
+                            >
                               {item.name}
                             </label>
                             <Checkbox.Root
                               id={item.id}
                               onClick={toggleSelectedItem}
-                              className="w-6 h-6 flex justify-center items-center border border-slate-400 rounded-md data-[state=checked]:border-teal-400"
+                              className="w-6 h-6 flex justify-center items-center border-2 border-slate-500 rounded-md data-[state=checked]:border-teal-500"
                             >
                               <Checkbox.Indicator>
                                 <Check
                                   size={18}
                                   strokeWidth={3}
-                                  className="text-teal-400"
+                                  className="text-teal-500"
                                 />
                               </Checkbox.Indicator>
                             </Checkbox.Root>
@@ -180,7 +197,7 @@ export default function List() {
               </div>
 
               <Button width="w-fit">
-                <Tag size={22} />
+                <Tag size={21} />
                 Add category
               </Button>
             </div>
