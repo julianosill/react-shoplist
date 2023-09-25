@@ -69,6 +69,10 @@ export default function List() {
     setProduct({ ...product, category })
   }
 
+  const openCategoryDialog = () => {
+    console.log('Category!')
+  }
+
   function addItem(e: FormEvent<HTMLFormElement>) {
     e.preventDefault()
     if (!product?.category) {
@@ -196,7 +200,12 @@ export default function List() {
                 </Select.Root>
               </div>
 
-              <Button width="w-fit">
+              <Button
+                anchor={true}
+                variant="outline"
+                width="w-fit"
+                onClick={openCategoryDialog}
+              >
                 <Tag size={21} />
                 Add category
               </Button>
