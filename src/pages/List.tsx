@@ -6,6 +6,7 @@ import { Button } from '../components/Button'
 import { Input } from '../components/Input'
 import * as Checkbox from '@radix-ui/react-checkbox'
 import * as Select from '@radix-ui/react-select'
+import * as Dialog from '@radix-ui/react-dialog'
 
 import {
   Check,
@@ -24,26 +25,18 @@ interface Product {
   created?: Date
 }
 
-const listExample = [
-  { id: '1', name: 'Item 1', category: 'Bazar' },
-  { id: '2', name: 'Item 1', category: 'Market' },
-  { id: '3', name: 'Item 1', category: 'Bazar' },
-  { id: '4', name: 'Item 1', category: 'Market' },
-  { id: '5', name: 'Item 1', category: 'Home' },
-  { id: '6', name: 'Item 1', category: 'Fruits' },
-]
-
 export default function List() {
   const [list, setList] = useState<Product[] | null>(null)
   const [categories, setCategories] = useState<string[]>([])
   const [loadingList, setLoadingList] = useState(true)
+  const [loadingAdd, setLoadingAdd] = useState(false)
   const [selectedItems, setSelectedItems] = useState<string[]>([])
   const [product, setProduct] = useState<Product | null>({
     name: '',
     category: '',
   })
 
-  async function getList() {
+  async function loadList() {
     const productsRef = collection(db, 'market')
     await getDocs(productsRef)
       .then((snapshot) => {
@@ -57,6 +50,7 @@ export default function List() {
           })
         })
         setList(items)
+        getCategories()
       })
       .catch((error) => console.log(error))
       .finally(() => setLoadingList(false))
@@ -89,29 +83,34 @@ export default function List() {
     setProduct({ ...product, category })
   }
 
-  const openCategoryDialog = () => {
-    console.log('Category!')
+  const addCategory = () => {
+    const newCategoryList = categories
+    newCategoryList.push('Test')
+    setCategories([...newCategoryList])
   }
 
-  function addItem(e: FormEvent<HTMLFormElement>) {
+  async function addItem(e: FormEvent<HTMLFormElement>) {
     e.preventDefault()
     if (!product?.category) {
       console.log('Category is empty')
       return
     }
-    const newList = list
-    newList?.push({
-      id: '55',
+    setLoadingAdd(true)
+    await addDoc(collection(db, 'market'), {
       name: product.name,
       category: product.category,
+      created: new Date(),
     })
-    setList([...newList])
-    console.log(newList)
+      .then(() => {
+        setProduct({ name: '', category: '' })
+        loadList()
+      })
+      .catch((error) => console.log(error))
+      .finally(() => setLoadingAdd(false))
   }
 
   useEffect(() => {
-    getList()
-    getCategories()
+    loadList()
   }, [])
 
   // console.log('Rendering...')
@@ -233,19 +232,49 @@ export default function List() {
                     </Select.Root>
                   </div>
 
-                  <Button
-                    anchor={true}
-                    variant="outline"
-                    width="w-fit"
-                    onClick={openCategoryDialog}
-                  >
-                    <Tag size={21} />
-                    Add category
-                  </Button>
+                  <Dialog.Root>
+                    <Dialog.Trigger>
+                      <Button anchor={true} variant="outline" width="w-fit">
+                        <Tag size={21} />
+                        Add category
+                      </Button>
+                    </Dialog.Trigger>
+                    <Dialog.Portal>
+                      <Dialog.Overlay className="bg-slate-800/80 fixed inset-0" />
+                      <Dialog.Content className="fixed top-[50%] left-[50%] max-h-[85vh] w-10/12 max-w-2xl translate-x-[-50%] translate-y-[-50%] p-10 rounded-lg bg-white shadow-xl shadow-slate-700 focus:outline-none">
+                        <Dialog.Title className="mb-6 text-2xl text-slate-700">
+                          Add new category
+                        </Dialog.Title>
+
+                        <form onSubmit={addCategory} className="flex gap-4">
+                          <Input
+                            name="category"
+                            type="text"
+                            placeholder="Category"
+                          />
+                          <Dialog.Close asChild>
+                            <Button width="w-fit">
+                              <Tag size={21} />
+                              Add
+                            </Button>
+                          </Dialog.Close>
+                        </form>
+                      </Dialog.Content>
+                    </Dialog.Portal>
+                  </Dialog.Root>
                 </div>
-                <Button width="w-full">
-                  <PlusCircle />
-                  Add item
+                <Button width="w-full" disabled={loadingAdd}>
+                  {loadingAdd ? (
+                    <>
+                      <RefreshCw size={22} className="animate-spin" />
+                      Adding item...
+                    </>
+                  ) : (
+                    <>
+                      <PlusCircle />
+                      Add item
+                    </>
+                  )}
                 </Button>
               </form>
             </section>
