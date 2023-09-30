@@ -1,6 +1,6 @@
 import { ChangeEvent, FormEvent, MouseEvent, useEffect, useState } from 'react'
 import { db } from '../services/firebaseConnection'
-import { collection, doc, getDocs, addDoc, deleteDoc } from 'firebase/firestore'
+import { collection, getDocs, addDoc, deleteDoc } from 'firebase/firestore'
 
 import { Button } from '../components/Button'
 import { Input } from '../components/Input'
@@ -16,13 +16,14 @@ import {
   ShoppingBasket,
   Tag,
   Tags,
+  Trash2,
 } from 'lucide-react'
 
 interface Product {
-  id?: string
-  name?: string
-  category?: string
-  created?: Date
+  id: string
+  name: string
+  category: string
+  created: Date
 }
 
 export default function List() {
@@ -31,7 +32,7 @@ export default function List() {
   const [loadingList, setLoadingList] = useState(true)
   const [loadingAdd, setLoadingAdd] = useState(false)
   const [selectedItems, setSelectedItems] = useState<string[]>([])
-  const [product, setProduct] = useState<Product | null>({
+  const [product, setProduct] = useState({
     name: '',
     category: '',
   })
@@ -40,31 +41,25 @@ export default function List() {
     const productsRef = collection(db, 'market')
     await getDocs(productsRef)
       .then((snapshot) => {
-        const items: object[] = []
+        const items: Product[] = []
+        const cat: string[] = []
         snapshot.forEach((doc) => {
+          const hasCategory = cat.includes(doc.data().category)
           items.push({
             id: doc.id,
             name: doc.data().name,
             category: doc.data().category,
             created: doc.data().created,
           })
+          if (!hasCategory) {
+            cat.push(doc.data().category)
+          }
         })
         setList(items)
-        getCategories()
+        setCategories(cat)
       })
       .catch((error) => console.log(error))
       .finally(() => setLoadingList(false))
-  }
-
-  function getCategories() {
-    const cat: string[] = []
-    list?.forEach((item) => {
-      const hasCategory = cat.includes(item.category)
-      if (!hasCategory) {
-        cat.push(item.category)
-      }
-    })
-    setCategories(cat)
   }
 
   const toggleSelectedItem = (e: MouseEvent<HTMLButtonElement>) => {
@@ -81,12 +76,6 @@ export default function List() {
 
   const handleCategorySelected = (category: string) => {
     setProduct({ ...product, category })
-  }
-
-  const addCategory = () => {
-    const newCategoryList = categories
-    newCategoryList.push('Test')
-    setCategories([...newCategoryList])
   }
 
   async function addItem(e: FormEvent<HTMLFormElement>) {
@@ -109,6 +98,10 @@ export default function List() {
       .finally(() => setLoadingAdd(false))
   }
 
+  function removeItems() {
+    console.log(selectedItems)
+  }
+
   useEffect(() => {
     loadList()
   }, [])
@@ -116,8 +109,8 @@ export default function List() {
   // console.log('Rendering...')
 
   return (
-    <main className="w-full min-h-screen py-6 bg-slate-700">
-      <div className="w-10/12 max-w-2xl mx-auto">
+    <div className="w-full min-h-screen py-6 bg-slate-700">
+      <main className="w-10/12 max-w-2xl mx-auto">
         {loadingList ? (
           <div className="py-10 flex flex-col items-center gap-4">
             <RefreshCw size={64} className="text-slate-500 animate-spin" />
@@ -126,61 +119,69 @@ export default function List() {
             </h2>
           </div>
         ) : (
-          <>
-            {categories &&
-              categories.map((cat) => {
-                return (
-                  <section
-                    key={cat}
-                    className="pt-8 pb-4 border-t-2 border-slate-600 first:border-none"
-                  >
-                    <h2 className="mb-2 flex items-center gap-2 text-2xl text-teal-500">
-                      <Tags
-                        strokeWidth={1}
-                        size={26}
-                        className="text-slate-500"
-                      />
-                      {cat}
-                    </h2>
-                    <ul className="text-white">
-                      {list &&
-                        list.map((item) => {
-                          if (item.category === cat) {
-                            const isSelected = selectedItems.includes(item.id)
-                            return (
-                              <li
-                                key={item.id}
-                                className={`px-4 flex justify-between items-center rounded-lg border-b last:border-0 border-slate-600/50 hover:bg-slate-800/50 ${
-                                  isSelected && 'bg-slate-800/30'
-                                }`}
+          <section className="relative">
+            {selectedItems.length > 0 && (
+              <button
+                onClick={removeItems}
+                className="absolute top-0 right-0 p-1.5 border-2 border-slate-400 text-slate-400 rounded-md hover:bg-teal-500 hover:text-white hover:border-teal-500"
+              >
+                <Trash2 size={22} />
+              </button>
+            )}
+            {categories.map((cat) => {
+              return (
+                <div
+                  key={cat}
+                  className="pt-8 pb-4 border-t-2 border-slate-600 first-of-type:border-none"
+                >
+                  <h2 className="mb-2 flex items-center gap-2 text-2xl text-teal-500">
+                    <Tags
+                      strokeWidth={1}
+                      size={26}
+                      className="text-slate-500"
+                    />
+                    {cat}
+                  </h2>
+                  <ul className="text-white">
+                    {list &&
+                      list.map((item) => {
+                        if (item.category === cat) {
+                          const isSelected = selectedItems.includes(item.id)
+                          return (
+                            <li
+                              key={item.id}
+                              className={`px-4 flex justify-between items-center rounded-lg border-b last:border-0 border-slate-600/50 hover:bg-slate-800/50 ${
+                                isSelected && 'bg-slate-800/30'
+                              }`}
+                            >
+                              <label
+                                htmlFor={item.id}
+                                className="flex-1 py-4 cursor-pointer"
                               >
-                                <label
-                                  htmlFor={item.id}
-                                  className="flex-1 py-4 cursor-pointer"
-                                >
-                                  {item.name}
-                                </label>
-                                <Checkbox.Root
-                                  id={item.id}
-                                  onClick={toggleSelectedItem}
-                                  className="w-6 h-6 flex justify-center items-center border-2 border-slate-500 rounded-md data-[state=checked]:border-teal-500"
-                                >
-                                  <Checkbox.Indicator>
-                                    <Check
-                                      size={18}
-                                      strokeWidth={3}
-                                      className="text-teal-500"
-                                    />
-                                  </Checkbox.Indicator>
-                                </Checkbox.Root>
-                              </li>
-                            )
-                          }
-                        })}
-                    </ul>
-                  </section>
-                )
-              })}
+                                {item.name}
+                              </label>
+                              <Checkbox.Root
+                                id={item.id}
+                                onClick={toggleSelectedItem}
+                                className="w-6 h-6 flex justify-center items-center border-2 border-slate-500 rounded-md data-[state=checked]:border-teal-500"
+                              >
+                                <Checkbox.Indicator>
+                                  <Check
+                                    size={18}
+                                    strokeWidth={3}
+                                    className="text-teal-500"
+                                  />
+                                </Checkbox.Indicator>
+                              </Checkbox.Root>
+                            </li>
+                          )
+                        }
+                      })}
+                  </ul>
+                </div>
+              )
+            })}
+
             <section className="sticky bottom-6 p-10 mt-12 rounded-xl bg-white">
               <form onSubmit={addItem} className="flex flex-col gap-4">
                 <div className="w-full relative">
@@ -246,7 +247,7 @@ export default function List() {
                           Add new category
                         </Dialog.Title>
 
-                        <form onSubmit={addCategory} className="flex gap-4">
+                        <form className="flex gap-4">
                           <Input
                             name="category"
                             type="text"
@@ -278,9 +279,9 @@ export default function List() {
                 </Button>
               </form>
             </section>
-          </>
+          </section>
         )}
-      </div>
-    </main>
+      </main>
+    </div>
   )
 }
