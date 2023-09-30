@@ -1,6 +1,6 @@
 import { ChangeEvent, FormEvent, MouseEvent, useEffect, useState } from 'react'
 import { db } from '../services/firebaseConnection'
-import { collection, getDocs, addDoc, deleteDoc } from 'firebase/firestore'
+import { collection, getDocs, addDoc, deleteDoc, doc } from 'firebase/firestore'
 
 import { Button } from '../components/Button'
 import { Input } from '../components/Input'
@@ -98,8 +98,20 @@ export default function List() {
       .finally(() => setLoadingAdd(false))
   }
 
-  function removeItems() {
-    console.log(selectedItems)
+  async function removeItems() {
+    try {
+      const removeSelectedItems = selectedItems.map((docId) => {
+        return deleteDoc(doc(db, 'market', docId))
+      })
+      await Promise.all(removeSelectedItems)
+        .then(() => {
+          loadList()
+          setSelectedItems([])
+        })
+        .catch((error) => console.log(error))
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   useEffect(() => {
