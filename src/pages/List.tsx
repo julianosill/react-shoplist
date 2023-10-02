@@ -17,6 +17,7 @@ import {
   Tag,
   Tags,
   Trash2,
+  X,
 } from 'lucide-react'
 
 interface Product {
@@ -32,6 +33,7 @@ export default function List() {
   const [loadingList, setLoadingList] = useState(true)
   const [loadingAdd, setLoadingAdd] = useState(false)
   const [selectedItems, setSelectedItems] = useState<string[]>([])
+  const [openDialog, setOpenDialog] = useState(false)
   const [product, setProduct] = useState({
     name: '',
     category: '',
@@ -60,6 +62,15 @@ export default function List() {
       })
       .catch((error) => console.log(error))
       .finally(() => setLoadingList(false))
+  }
+
+  const addCategory = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    e.stopPropagation()
+    const data = Object.fromEntries(new FormData(e.currentTarget))
+    const newCategory = data.category.toString()
+    setCategories([...categories, newCategory])
+    setOpenDialog(false)
   }
 
   const toggleSelectedItem = (e: MouseEvent<HTMLButtonElement>) => {
@@ -249,7 +260,7 @@ export default function List() {
                     </Select.Root>
                   </div>
 
-                  <Dialog.Root>
+                  <Dialog.Root open={openDialog} onOpenChange={setOpenDialog}>
                     <Dialog.Trigger>
                       <Button anchor={true} variant="outline" width="w-fit">
                         <Tag size={21} />
@@ -258,23 +269,24 @@ export default function List() {
                     </Dialog.Trigger>
                     <Dialog.Portal>
                       <Dialog.Overlay className="bg-slate-800/80 fixed inset-0" />
-                      <Dialog.Content className="fixed top-[50%] left-[50%] max-h-[85vh] w-10/12 max-w-2xl translate-x-[-50%] translate-y-[-50%] p-10 rounded-lg bg-white shadow-xl shadow-slate-700 focus:outline-none">
+                      <Dialog.Content className="fixed top-[50%] left-[50%] max-h-[85vh] w-10/12 max-w-2xl translate-x-[-50%] translate-y-[-50%] p-10 rounded-lg bg-white shadow-xl shadow-slate-700 focus:outline-none group">
                         <Dialog.Title className="mb-6 text-2xl text-slate-700">
                           Add new category
                         </Dialog.Title>
+                        <Dialog.Close className="absolute top-4 right-4 p-1 rounded-full text-slate-300 group-hover:text-slate-500 hover:bg-slate-200">
+                          <X />
+                        </Dialog.Close>
 
-                        <form className="flex gap-4">
+                        <form onSubmit={addCategory} className="flex gap-4">
                           <Input
-                            name="category"
                             type="text"
-                            placeholder="Category"
+                            name="category"
+                            placeholder="Category name"
                           />
-                          <Dialog.Close asChild>
-                            <Button width="w-fit">
-                              <Tag size={21} />
-                              Add
-                            </Button>
-                          </Dialog.Close>
+                          <Button width="w-fit">
+                            <Tag size={21} />
+                            Add
+                          </Button>
                         </form>
                       </Dialog.Content>
                     </Dialog.Portal>
