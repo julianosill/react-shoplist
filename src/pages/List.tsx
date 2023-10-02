@@ -80,7 +80,11 @@ export default function List() {
 
   async function addItem(e: FormEvent<HTMLFormElement>) {
     e.preventDefault()
-    if (!product?.category) {
+    if (!product.name) {
+      console.log('Name is empty')
+      return
+    }
+    if (!product.category) {
       console.log('Category is empty')
       return
     }
@@ -91,7 +95,7 @@ export default function List() {
       created: new Date(),
     })
       .then(() => {
-        setProduct({ name: '', category: '' })
+        setProduct({ ...product, name: '' })
         loadList()
       })
       .catch((error) => console.log(error))
