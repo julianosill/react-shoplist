@@ -41,6 +41,9 @@ export default function List() {
   const [loadingList, setLoadingList] = useState(true)
   const [loadingAdd, setLoadingAdd] = useState(false)
   const [selectedItems, setSelectedItems] = useState<string[]>([])
+  const [selectCategory, setSelectCategory] = useState<string | undefined>(
+    undefined
+  )
   const [openDialog, setOpenDialog] = useState(false)
   const [product, setProduct] = useState({
     name: '',
@@ -84,6 +87,7 @@ export default function List() {
       return
     }
     setCategories([...categories, newCategory])
+    setSelectCategory(newCategory)
     setOpenDialog(false)
   }
 
@@ -240,7 +244,10 @@ export default function List() {
                 </div>
                 <div className="flex gap-4">
                   <div className="flex-1">
-                    <Select.Root onValueChange={handleCategorySelected}>
+                    <Select.Root
+                      value={selectCategory}
+                      onValueChange={handleCategorySelected}
+                    >
                       <Select.Trigger
                         className="w-full h-12 px-3 flex items-center justify-between border-2 border-slate-200 rounded-md text-slate-700 bg-slate-100 hover:bg-slate-50 focus:bg-slate-50 outline-teal-500"
                         aria-label="Category"
