@@ -1,6 +1,14 @@
 import { ChangeEvent, FormEvent, MouseEvent, useEffect, useState } from 'react'
 import { db } from '../services/firebaseConnection'
-import { collection, getDocs, addDoc, deleteDoc, doc } from 'firebase/firestore'
+import {
+  collection,
+  getDocs,
+  addDoc,
+  deleteDoc,
+  doc,
+  query,
+  orderBy,
+} from 'firebase/firestore'
 
 import { Button } from '../components/Button'
 import { Input } from '../components/Input'
@@ -39,9 +47,39 @@ export default function List() {
     category: '',
   })
 
+  // async function loadList() {
+  //   const productsRef = collection(db, 'market')
+  //   await getDocs(productsRef)
+  //     .then((snapshot) => {
+  //       const items: Product[] = []
+  //       const cat: string[] = []
+  //       snapshot.forEach((doc) => {
+  //         const hasCategory = cat.includes(doc.data().category)
+  //         items.push({
+  //           id: doc.id,
+  //           name: doc.data().name,
+  //           category: doc.data().category,
+  //           created: doc.data().created,
+  //         })
+  //         if (!hasCategory) {
+  //           cat.push(doc.data().category)
+  //         }
+  //       })
+  //       console.log(items[0].created)
+
+  //       console.log(items)
+
+  //       setList(items)
+  //       setCategories(cat)
+  //     })
+  //     .catch((error) => console.log(error))
+  //     .finally(() => setLoadingList(false))
+  // }
+
   async function loadList() {
     const productsRef = collection(db, 'market')
-    await getDocs(productsRef)
+    const q = query(productsRef, orderBy('created', 'desc'))
+    await getDocs(q)
       .then((snapshot) => {
         const items: Product[] = []
         const cat: string[] = []
