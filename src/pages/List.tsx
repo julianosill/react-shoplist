@@ -69,6 +69,11 @@ export default function List() {
     e.stopPropagation()
     const data = Object.fromEntries(new FormData(e.currentTarget))
     const newCategory = data.category.toString()
+    const hasCategory = categories.includes(newCategory)
+    if (hasCategory) {
+      console.log('Category already exist.')
+      return
+    }
     setCategories([...categories, newCategory])
     setOpenDialog(false)
   }
