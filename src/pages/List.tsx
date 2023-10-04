@@ -159,9 +159,9 @@ export default function List() {
   // console.log('Rendering...')
 
   return (
-    <div className="w-full min-h-screen py-6 bg-slate-700">
-      <main className="w-10/12 max-w-2xl mx-auto">
-        <header className="flex justify-between items-center mb-4 pb-4 border-b-2 border-slate-600">
+    <div className="w-full min-h-screen bg-slate-700">
+      <main className="w-10/12 max-w-2xl mx-auto flex flex-col gap-4">
+        <header className="sticky top-0 flex justify-between items-center py-4 border-b-2 border-slate-600 bg-slate-700">
           <img src={LogoH} alt="SHOP List" className="w-40" />
           {selectedItems.length > 0 ? (
             <button
@@ -189,64 +189,65 @@ export default function List() {
             </h2>
           </div>
         ) : (
-          <section className="relative">
-            {categories.map((cat) => {
-              const hasItems = list?.some((item) => item.category === cat)
-              if (hasItems)
-                return (
-                  <div
-                    key={cat}
-                    className="pt-8 pb-4 border-t-2 border-slate-600 first-of-type:border-none"
-                  >
-                    <h2 className="mb-2 flex items-center gap-2 text-2xl text-teal-500">
-                      <Tags
-                        strokeWidth={1}
-                        size={26}
-                        className="text-slate-500"
-                      />
-                      {cat}
-                    </h2>
-                    <ul className="text-white">
-                      {list &&
-                        list.map((item) => {
-                          if (item.category === cat) {
-                            const isSelected = selectedItems.includes(item.id)
-                            return (
-                              <li
-                                key={item.id}
-                                className={`px-4 flex justify-between items-center rounded-lg border-b last:border-0 border-slate-600/50 hover:bg-slate-800/50 ${
-                                  isSelected && 'bg-slate-800/30'
-                                }`}
-                              >
-                                <label
-                                  htmlFor={item.id}
-                                  className="flex-1 py-4 cursor-pointer"
+          <>
+            <section className="flex-1">
+              {categories.map((cat) => {
+                const hasItems = list?.some((item) => item.category === cat)
+                if (hasItems)
+                  return (
+                    <div
+                      key={cat}
+                      className="py-8 border-t-2 border-slate-600 first-of-type:border-none"
+                    >
+                      <h2 className="mb-2 flex items-center gap-2 text-2xl text-teal-500">
+                        <Tags
+                          strokeWidth={1}
+                          size={26}
+                          className="text-slate-500"
+                        />
+                        {cat}
+                      </h2>
+                      <ul className="text-white">
+                        {list &&
+                          list.map((item) => {
+                            if (item.category === cat) {
+                              const isSelected = selectedItems.includes(item.id)
+                              return (
+                                <li
+                                  key={item.id}
+                                  className={`px-4 flex justify-between items-center rounded-lg border-b last:border-0 border-slate-600/50 hover:bg-slate-800/50 ${
+                                    isSelected && 'bg-slate-800/30'
+                                  }`}
                                 >
-                                  {item.name}
-                                </label>
-                                <Checkbox.Root
-                                  id={item.id}
-                                  onClick={toggleSelectedItem}
-                                  className="w-6 h-6 flex justify-center items-center border-2 border-slate-500 rounded-md data-[state=checked]:border-teal-500"
-                                >
-                                  <Checkbox.Indicator>
-                                    <Check
-                                      size={18}
-                                      strokeWidth={3}
-                                      className="text-teal-500"
-                                    />
-                                  </Checkbox.Indicator>
-                                </Checkbox.Root>
-                              </li>
-                            )
-                          }
-                        })}
-                    </ul>
-                  </div>
-                )
-            })}
-
-            <section className="sticky bottom-6 p-10 mt-12 rounded-xl bg-white">
+                                  <label
+                                    htmlFor={item.id}
+                                    className="flex-1 py-4 cursor-pointer"
+                                  >
+                                    {item.name}
+                                  </label>
+                                  <Checkbox.Root
+                                    id={item.id}
+                                    onClick={toggleSelectedItem}
+                                    className="w-6 h-6 flex justify-center items-center border-2 border-slate-500 rounded-md data-[state=checked]:border-teal-500"
+                                  >
+                                    <Checkbox.Indicator>
+                                      <Check
+                                        size={18}
+                                        strokeWidth={3}
+                                        className="text-teal-500"
+                                      />
+                                    </Checkbox.Indicator>
+                                  </Checkbox.Root>
+                                </li>
+                              )
+                            }
+                          })}
+                      </ul>
+                    </div>
+                  )
+              })}
+            </section>
+            <section className="sticky bottom-6 p-10 rounded-xl bg-white">
               <form onSubmit={addItem} className="flex flex-col gap-4">
                 <div className="w-full relative">
                   <ShoppingBasket className="absolute h-12 left-4 text-slate-300" />
@@ -292,7 +293,6 @@ export default function List() {
                     </ul>
                   )}
                 </div>
-
                 <Button width="w-full" disabled={loadingAdd}>
                   {loadingAdd ? (
                     <>
@@ -308,7 +308,7 @@ export default function List() {
                 </Button>
               </form>
             </section>
-          </section>
+          </>
         )}
       </main>
     </div>
