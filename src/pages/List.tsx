@@ -18,12 +18,14 @@ import {
   orderBy,
 } from 'firebase/firestore'
 
+import LogoH from '../assets/logo-h.svg'
 import { Button } from '../components/Button'
 import { Input } from '../components/Input'
 import * as Checkbox from '@radix-ui/react-checkbox'
 
 import {
   Check,
+  LogOut,
   PlusCircle,
   RefreshCw,
   ShoppingBasket,
@@ -159,6 +161,26 @@ export default function List() {
   return (
     <div className="w-full min-h-screen py-6 bg-slate-700">
       <main className="w-10/12 max-w-2xl mx-auto">
+        <header className="flex justify-between items-center mb-4 pb-4 border-b-2 border-slate-600">
+          <img src={LogoH} alt="SHOP List" className="w-40" />
+          {selectedItems.length > 0 ? (
+            <button
+              onClick={removeItems}
+              className="w-8 h-8 flex justify-center items-center border-2 border-slate-400 text-slate-400 rounded-md hover:bg-teal-500 hover:text-white hover:border-teal-500"
+            >
+              <Trash2 size={20} />
+            </button>
+          ) : (
+            <div>
+              <button
+                onClick={removeItems}
+                className="h-8 px-2 flex justify-center items-center gap-1 text-sm border border-slate-400 text-slate-400 rounded-md hover:text-teal-500 hover:border-teal-500"
+              >
+                Log out <LogOut size={18} />
+              </button>
+            </div>
+          )}
+        </header>
         {loadingList ? (
           <div className="py-10 flex flex-col items-center gap-4">
             <RefreshCw size={64} className="text-slate-500 animate-spin" />
@@ -168,14 +190,6 @@ export default function List() {
           </div>
         ) : (
           <section className="relative">
-            {selectedItems.length > 0 && (
-              <button
-                onClick={removeItems}
-                className="absolute top-0 right-0 p-1.5 border-2 border-slate-400 text-slate-400 rounded-md hover:bg-teal-500 hover:text-white hover:border-teal-500"
-              >
-                <Trash2 size={22} />
-              </button>
-            )}
             {categories.map((cat) => {
               const hasItems = list?.some((item) => item.category === cat)
               if (hasItems)
