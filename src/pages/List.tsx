@@ -46,6 +46,7 @@ export default function List() {
   const [categories, setCategories] = useState<string[]>([])
   const [loadingList, setLoadingList] = useState(true)
   const [loadingAdd, setLoadingAdd] = useState(false)
+  const [loadingDel, setLoadingDel] = useState(false)
   const [selectedItems, setSelectedItems] = useState<string[]>([])
   const [categoryFocus, setCategoryFocus] = useState(false)
   const [product, setProduct] = useState({
@@ -125,6 +126,7 @@ export default function List() {
   }
 
   async function removeItems() {
+    setLoadingDel(true)
     try {
       const removeSelectedItems = selectedItems.map((docId) => {
         return deleteDoc(doc(db, 'shoplist', docId))
@@ -133,6 +135,7 @@ export default function List() {
         .then(() => {
           loadList()
           setSelectedItems([])
+          setLoadingDel(false)
         })
         .catch((error) => console.log(error))
     } catch (error) {
@@ -167,9 +170,16 @@ export default function List() {
           {selectedItems.length > 0 ? (
             <button
               onClick={removeItems}
-              className="w-8 h-8 flex justify-center items-center border-2 border-slate-400 text-slate-400 rounded-md hover:bg-teal-500 hover:text-white hover:border-teal-500"
+              className={`w-8 h-8 flex justify-center items-center border-2 border-slate-400 text-slate-400 rounded-md hover:bg-teal-500 hover:text-white hover:border-teal-500 ${
+                loadingDel && 'opacity-50'
+              }`}
+              disabled={loadingDel}
             >
-              <Trash2 size={20} />
+              {loadingDel ? (
+                <RefreshCw size={20} className="animate-spin" />
+              ) : (
+                <Trash2 size={20} />
+              )}
             </button>
           ) : (
             <div>
@@ -226,9 +236,10 @@ export default function List() {
                               return (
                                 <li
                                   key={item.id}
-                                  className={`px-4 flex justify-between items-center rounded-lg border-b last:border-0 border-slate-600/50 hover:bg-slate-800/50 ${
-                                    isSelected && 'bg-slate-800/30'
-                                  }`}
+                                  className={`px-4 flex justify-between items-center rounded-lg border-b last:border-0 border-slate-600/50 hover:bg-slate-800/50 
+                                    ${isSelected && 'bg-slate-800/30'}
+                                    ${isSelected && loadingDel && 'opacity-50'}
+                                  `}
                                 >
                                   <label
                                     htmlFor={item.id}
