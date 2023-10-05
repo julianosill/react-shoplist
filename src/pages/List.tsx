@@ -146,24 +146,20 @@ export default function List() {
     }
   }
 
-  const handleClickOutside = (e) => {
-    if (!categoryRef.current?.contains(e.target)) {
+  const handleClickOutside: EventListener = (e) => {
+    const targetNode = e.target as Node
+    if (!categoryRef.current?.contains(targetNode)) {
       setCategoryFocus(false)
     }
   }
 
   useEffect(() => {
-    loadList()
+    document.addEventListener('click', handleClickOutside)
   }, [])
 
   useEffect(() => {
-    document.addEventListener('click', handleClickOutside)
-    return () => {
-      document.removeEventListener('click', handleClickOutside)
-    }
+    loadList()
   }, [])
-
-  // console.log('Rendering...')
 
   return (
     <div className="w-full min-h-screen bg-slate-700">
