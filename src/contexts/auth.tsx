@@ -66,8 +66,6 @@ export default function AuthProvider({ children }: AuthProviderProps) {
         if (user?.uid === storageUser.uid) {
           setLocalUser(storageUser)
           navigate('/list')
-        } else {
-          console.log('UID does not exist')
         }
       })
     }
