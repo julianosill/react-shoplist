@@ -1,6 +1,10 @@
-import { createContext, useState } from 'react'
+import { createContext, useCallback, useEffect, useState } from 'react'
 import { auth } from '../services/firebaseConnection'
-import { signInWithEmailAndPassword, signOut } from 'firebase/auth'
+import {
+  signInWithEmailAndPassword,
+  signOut,
+  onAuthStateChanged,
+} from 'firebase/auth'
 import { useNavigate } from 'react-router-dom'
 
 type AuthProviderProps = {
@@ -24,6 +28,8 @@ type AuthError = {
 }
 
 type AuthContextType = {
+  signed?: boolean
+  loadingUser?: boolean
   user: User
   setUser: React.Dispatch<React.SetStateAction<User>>
   login: () => Promise<void>
@@ -44,11 +50,29 @@ export const AuthContext = createContext<AuthContextType>({
 })
 
 export default function AuthProvider({ children }: AuthProviderProps) {
-  const [loading, setLoading] = useState(true)
   const [user, setUser] = useState({ email: '', password: '' })
+  const [localUser, setLocalUser] = useState<LocalUser | null>(null)
+  const [loadingUser, setLoadingUser] = useState(true)
   const [loadingAuth, setLoadingAuth] = useState(false)
   const [authError, setAuthError] = useState({})
   const navigate = useNavigate()
+
+  const loadUser = useCallback(() => {
+    setLoadingUser(true)
+    const storage = localStorage.getItem('@shoplist')
+    if (storage) {
+      const storageUser = JSON.parse(storage)
+      onAuthStateChanged(auth, (user) => {
+        if (user?.uid === storageUser.uid) {
+          setLocalUser(storageUser)
+          navigate('/list')
+        } else {
+          console.log('UID does not exist')
+        }
+      })
+    }
+    setLoadingUser(false)
+  }, [navigate])
 
   async function login() {
     setLoadingAuth(true)
@@ -59,13 +83,12 @@ export default function AuthProvider({ children }: AuthProviderProps) {
           uid: value.user.uid,
           email: value.user.email,
         }
-        storageUser(userData)
+        setLocalUser(userData)
+        setStorage(userData)
         navigate('/list')
       })
       .catch((error) => handleAuthError(error.code))
-      .finally(() => {
-        setLoadingAuth(false)
-      })
+      .finally(() => setLoadingAuth(false))
   }
 
   const handleAuthError = (error: string) => {
@@ -104,18 +127,25 @@ export default function AuthProvider({ children }: AuthProviderProps) {
     await signOut(auth)
       .then(() => {
         setUser({ email: '', password: '' })
+        setLocalUser(null)
         localStorage.removeItem('@shoplist')
       })
       .catch((error) => console.log(error))
   }
 
-  const storageUser = (user: LocalUser) => {
+  const setStorage = (user: LocalUser) => {
     localStorage.setItem('@shoplist', JSON.stringify(user))
   }
+
+  useEffect(() => {
+    loadUser()
+  }, [loadUser])
 
   return (
     <AuthContext.Provider
       value={{
+        signed: !!localUser,
+        loadingUser,
         user,
         setUser,
         loadingAuth,
