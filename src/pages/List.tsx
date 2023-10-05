@@ -2,6 +2,7 @@ import {
   ChangeEvent,
   FormEvent,
   MouseEvent,
+  useContext,
   useEffect,
   useMemo,
   useRef,
@@ -17,6 +18,7 @@ import {
   query,
   orderBy,
 } from 'firebase/firestore'
+import { AuthContext } from '../contexts/auth'
 
 import LogoH from '../assets/logo-h.svg'
 import { Button } from '../components/Button'
@@ -42,6 +44,7 @@ interface Product {
 }
 
 export default function List() {
+  const { logout } = useContext(AuthContext)
   const [list, setList] = useState<Product[] | null>(null)
   const [categories, setCategories] = useState<string[]>([])
   const [loadingList, setLoadingList] = useState(true)
@@ -184,7 +187,7 @@ export default function List() {
           ) : (
             <div>
               <button
-                onClick={removeItems}
+                onClick={logout}
                 className="h-8 px-2 flex justify-center items-center gap-1 text-sm border border-slate-400 text-slate-400 rounded-md hover:text-teal-500 hover:border-teal-500"
               >
                 Log out <LogOut size={18} />
