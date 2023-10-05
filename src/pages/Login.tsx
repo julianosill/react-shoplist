@@ -41,7 +41,7 @@ export default function Login() {
       : setAuthError({
           password: '',
         })
-  }, [user])
+  }, [user, setAuthError])
 
   useEffect(() => {
     checkPasswordLength()
@@ -60,7 +60,7 @@ export default function Login() {
               value={user.email}
               onChange={handleChangeInput}
               placeholder="E-mail"
-              hasIcon={true}
+              hasIcon
             />
             {authError.email && <ErrorMessage message={authError.email} />}
           </div>
@@ -72,7 +72,7 @@ export default function Login() {
               value={user.password}
               onChange={handleChangeInput}
               placeholder="Password"
-              hasIcon={true}
+              hasIcon
             />
             <a
               className="absolute cursor-pointer h-12 px-4 top-0 right-0 flex flex-col justify-center"
@@ -96,11 +96,7 @@ export default function Login() {
             <ErrorMessage message={authError.general} warning={true} />
           )}
           <div className="mt-4">
-            <Button
-              hasIcon={true}
-              disabled={disableButton || loadingAuth}
-              onClick={login}
-            >
+            <Button disabled={disableButton || loadingAuth} onClick={login}>
               {loadingAuth ? (
                 <>
                   <RefreshCw size={22} className="animate-spin" />
