@@ -62,7 +62,7 @@ export default function List() {
   }, [categories, product.category])
 
   async function loadList() {
-    const productsRef = collection(db, 'market')
+    const productsRef = collection(db, 'shoplist')
     const q = query(productsRef, orderBy('created', 'desc'))
     await getDocs(q)
       .then((snapshot) => {
@@ -110,7 +110,7 @@ export default function List() {
       return
     }
     setLoadingAdd(true)
-    await addDoc(collection(db, 'market'), {
+    await addDoc(collection(db, 'shoplist'), {
       name: product.name,
       category: product.category,
       created: new Date(),
@@ -126,7 +126,7 @@ export default function List() {
   async function removeItems() {
     try {
       const removeSelectedItems = selectedItems.map((docId) => {
-        return deleteDoc(doc(db, 'market', docId))
+        return deleteDoc(doc(db, 'shoplist', docId))
       })
       await Promise.all(removeSelectedItems)
         .then(() => {
