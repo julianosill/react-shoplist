@@ -25,6 +25,7 @@ import * as Checkbox from '@radix-ui/react-checkbox'
 
 import {
   Check,
+  LayoutList,
   LogOut,
   PlusCircle,
   RefreshCw,
@@ -160,7 +161,7 @@ export default function List() {
 
   return (
     <div className="w-full min-h-screen bg-slate-700">
-      <main className="w-10/12 max-w-2xl mx-auto flex flex-col gap-4">
+      <main className="w-10/12 max-w-2xl min-h-screen mx-auto flex flex-col gap-4">
         <header className="sticky top-0 flex justify-between items-center py-4 border-b-2 border-slate-600 bg-slate-700">
           <img src={LogoH} alt="SHOP List" className="w-40" />
           {selectedItems.length > 0 ? (
@@ -182,34 +183,44 @@ export default function List() {
           )}
         </header>
         {loadingList ? (
-          <div className="py-10 flex flex-col items-center gap-4">
+          <div className="py-10 flex-1 flex flex-col items-center justify-center gap-4">
             <RefreshCw size={64} className="text-slate-500 animate-spin" />
-            <h2 className="text-xl text-slate-100 animate-pulse">
+            <p className="text-lg text-slate-100 animate-pulse">
               Loading your list...
-            </h2>
+            </p>
           </div>
         ) : (
           <>
-            <section className="flex-1">
-              {categories.map((cat) => {
-                const hasItems = list?.some((item) => item.category === cat)
-                if (hasItems)
-                  return (
-                    <div
-                      key={cat}
-                      className="py-8 border-t-2 border-slate-600 first-of-type:border-none"
-                    >
-                      <h2 className="mb-2 flex items-center gap-2 text-2xl text-teal-500">
-                        <Tags
-                          strokeWidth={1}
-                          size={26}
-                          className="text-slate-500"
-                        />
-                        {cat}
-                      </h2>
-                      <ul className="text-white">
-                        {list &&
-                          list.map((item) => {
+            {list && list.length === 0 ? (
+              <div className="flex-1 flex flex-col justify-center items-center">
+                <LayoutList size={64} className="text-slate-500" />
+                <p className="mt-4 text-lg text-slate-100">
+                  There are no products in this list.
+                </p>
+                <p className="text text-slate-400">
+                  Please, add some items below.
+                </p>
+              </div>
+            ) : (
+              <section className="flex-1">
+                {categories.map((cat) => {
+                  const hasItems = list?.some((item) => item.category === cat)
+                  if (hasItems)
+                    return (
+                      <div
+                        key={cat}
+                        className="py-8 border-t-2 border-slate-600 first-of-type:border-none"
+                      >
+                        <h2 className="mb-2 flex items-center gap-2 text-2xl text-teal-500">
+                          <Tags
+                            strokeWidth={1}
+                            size={26}
+                            className="text-slate-500"
+                          />
+                          {cat}
+                        </h2>
+                        <ul className="text-white">
+                          {list?.map((item) => {
                             if (item.category === cat) {
                               const isSelected = selectedItems.includes(item.id)
                               return (
@@ -242,11 +253,13 @@ export default function List() {
                               )
                             }
                           })}
-                      </ul>
-                    </div>
-                  )
-              })}
-            </section>
+                        </ul>
+                      </div>
+                    )
+                })}
+              </section>
+            )}
+
             <section className="sticky bottom-6 p-10 rounded-xl bg-white">
               <form onSubmit={addItem} className="flex flex-col gap-4">
                 <div className="w-full relative">
