@@ -21,8 +21,8 @@ import {
 import { AuthContext } from '../contexts/auth'
 
 import LogoH from '../assets/logo-h.svg'
+import Input from '../components/Input'
 import { Button } from '../components/Button'
-import { Input } from '../components/Input'
 import { ErrorMessage } from '../components/ErrorMessage'
 import * as Checkbox from '@radix-ui/react-checkbox'
 
@@ -58,7 +58,8 @@ export default function List() {
     name: '',
     category: '',
   })
-  const categoryRef = useRef<HTMLDivElement | null>(null)
+  const productRef = useRef<HTMLInputElement | null>(null)
+  const categoryRef = useRef<HTMLInputElement | null>(null)
 
   const filteredCategories = useMemo(() => {
     return categories.filter((item) => {
@@ -111,10 +112,12 @@ export default function List() {
     setError('')
     if (!product.name) {
       setError('Item cannot be empty.')
+      productRef.current?.focus()
       return
     }
     if (!product.category) {
       setError('Category cannot be empty.')
+      categoryRef.current?.focus()
       return
     }
     setLoadingAdd(true)
@@ -275,20 +278,18 @@ export default function List() {
 
             <section className="mb-8 p-10 rounded-xl bg-white">
               <form onSubmit={addItem} className="flex flex-col gap-4">
+                <Input
+                  ref={productRef}
+                  name="name"
+                  type="text"
+                  value={product.name}
+                  onChange={handleChangeInput}
+                  placeholder="Item"
+                  icon={() => <ShoppingBasket />}
+                />
                 <div className="w-full relative">
-                  <ShoppingBasket className="absolute h-12 left-4 text-slate-300" />
                   <Input
-                    name="name"
-                    type="text"
-                    value={product.name}
-                    onChange={handleChangeInput}
-                    placeholder="Item"
-                    hasIcon
-                  />
-                </div>
-                <div ref={categoryRef} className="w-full relative">
-                  <Tags className="absolute h-12 left-4 text-slate-300" />
-                  <Input
+                    ref={categoryRef}
                     name="category"
                     type="text"
                     value={product.category}
@@ -297,8 +298,8 @@ export default function List() {
                       setCategoryFocus(true)
                     }}
                     placeholder="Category"
+                    icon={() => <Tags />}
                     autoComplete="off"
-                    hasIcon
                   />
                   {categoryFocus && filteredCategories.length > 0 && (
                     <ul className="absolute w-full bottom-14 p-4 text-slate-700 rounded-lg shadow-lg bg-white">

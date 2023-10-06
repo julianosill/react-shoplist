@@ -7,7 +7,7 @@ import {
 } from 'react'
 import { AuthContext } from '../contexts/auth'
 
-import { Input } from '../components/Input'
+import Input from '../components/Input'
 import { Button } from '../components/Button'
 import { ErrorMessage } from '../components/ErrorMessage'
 
@@ -52,27 +52,23 @@ export default function Login() {
       <section className="w-10/12 max-w-lg p-12 rounded-xl bg-white shadow-xl shadow-slate-700">
         <img src={logo} alt="ShopList" className="w-56 mx-auto mb-14" />
         <form className="flex flex-col gap-6 items-center">
+          <Input
+            name="email"
+            type="email"
+            value={user.email}
+            onChange={handleChangeInput}
+            placeholder="E-mail"
+            icon={() => <Mail size={22} />}
+          />
+          {authError.email && <ErrorMessage message={authError.email} />}
           <div className="w-full relative">
-            <Mail size={22} className="absolute h-12 left-4 text-slate-300" />
-            <Input
-              name="email"
-              type="email"
-              value={user.email}
-              onChange={handleChangeInput}
-              placeholder="E-mail"
-              hasIcon
-            />
-            {authError.email && <ErrorMessage message={authError.email} />}
-          </div>
-          <div className="w-full relative">
-            <Lock size={22} className="absolute h-12 left-4 text-slate-300" />
             <Input
               name="password"
               type={hiddenPassword ? 'password' : 'type'}
               value={user.password}
               onChange={handleChangeInput}
               placeholder="Password"
-              hasIcon
+              icon={() => <Lock size={22} />}
             />
             <a
               className="absolute cursor-pointer h-12 px-4 top-0 right-0 flex flex-col justify-center"
