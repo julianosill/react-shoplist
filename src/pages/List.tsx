@@ -243,6 +243,7 @@ export default function List() {
                                     {item.name}
                                   </label>
                                   <Checkbox.Root
+                                    disabled={loadingDel}
                                     id={item.id}
                                     onClick={toggleSelectedItem}
                                     className="w-6 h-6 flex justify-center items-center border-2 border-slate-500 rounded-md data-[state=checked]:border-teal-500"
