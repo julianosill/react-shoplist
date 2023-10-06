@@ -85,7 +85,10 @@ export default function AuthProvider({ children }: AuthProviderProps) {
         setStorage(userData)
         navigate('/list')
       })
-      .catch((error) => handleAuthError(error.code))
+      .catch((error) => {
+        console.log(error)
+        handleAuthError(error.code)
+      })
       .finally(() => setLoadingAuth(false))
   }
 
