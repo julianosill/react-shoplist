@@ -23,6 +23,7 @@ import { AuthContext } from '../contexts/auth'
 import LogoH from '../assets/logo-h.svg'
 import { Button } from '../components/Button'
 import { Input } from '../components/Input'
+import { ErrorMessage } from '../components/ErrorMessage'
 import * as Checkbox from '@radix-ui/react-checkbox'
 
 import {
@@ -52,6 +53,7 @@ export default function List() {
   const [loadingDel, setLoadingDel] = useState(false)
   const [selectedItems, setSelectedItems] = useState<string[]>([])
   const [categoryFocus, setCategoryFocus] = useState(false)
+  const [error, setError] = useState('')
   const [product, setProduct] = useState({
     name: '',
     category: '',
@@ -106,12 +108,13 @@ export default function List() {
 
   async function addItem(e: FormEvent<HTMLFormElement>) {
     e.preventDefault()
+    setError('')
     if (!product.name) {
-      console.log('Name is empty')
+      setError('Item cannot be empty.')
       return
     }
     if (!product.category) {
-      console.log('Category is empty')
+      setError('Category cannot be empty.')
       return
     }
     setLoadingAdd(true)
@@ -124,7 +127,10 @@ export default function List() {
         setProduct({ name: '', category: '' })
         loadList()
       })
-      .catch((error) => console.log(error))
+      .catch((error) => {
+        console.log(error)
+        setError(error.code)
+      })
       .finally(() => setLoadingAdd(false))
   }
 
@@ -313,6 +319,7 @@ export default function List() {
                     </ul>
                   )}
                 </div>
+                {error && <ErrorMessage message={error} warning={true} />}
                 <Button width="w-full" disabled={loadingAdd}>
                   {loadingAdd ? (
                     <>
