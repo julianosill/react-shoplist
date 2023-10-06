@@ -161,7 +161,7 @@ export default function List() {
     <div className="w-full min-h-screen bg-slate-700" onClick={handleClick}>
       <main className="w-10/12 max-w-2xl min-h-screen mx-auto flex flex-col gap-4">
         <header className="sticky top-0 flex justify-between items-center py-4 border-b-2 border-slate-600 bg-slate-700">
-          <img src={LogoH} alt="SHOP List" className="w-40" />
+          <img src={LogoH} alt="ShopList" className="w-40" />
           {selectedItems.length > 0 ? (
             <button
               onClick={removeItems}
