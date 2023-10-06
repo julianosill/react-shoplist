@@ -266,7 +266,7 @@ export default function List() {
               </section>
             )}
 
-            <section className="sticky bottom-6 p-10 rounded-xl bg-white">
+            <section className="mb-8 p-10 rounded-xl bg-white">
               <form onSubmit={addItem} className="flex flex-col gap-4">
                 <div className="w-full relative">
                   <ShoppingBasket className="absolute h-12 left-4 text-slate-300" />
