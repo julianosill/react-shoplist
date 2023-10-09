@@ -168,7 +168,7 @@ export default function List() {
 
   return (
     <div className="w-full min-h-screen bg-slate-700" onClick={handleClick}>
-      <main className="w-10/12 max-w-2xl min-h-screen mx-auto flex flex-col gap-4">
+      <main className="w-10/12 max-w-2xl min-h-screen mx-auto flex flex-col gap-2">
         <header
           className={`
             ${selectedItems.length > 0 && 'sticky top-0'}
@@ -228,12 +228,12 @@ export default function List() {
                     return (
                       <div
                         key={cat}
-                        className="py-8 border-t-2 border-slate-600 first-of-type:border-none"
+                        className="py-6 border-t-2 border-slate-600 first-of-type:border-none"
                       >
-                        <h2 className="mb-2 flex items-center gap-2 text-2xl text-teal-500">
+                        <h2 className="mb-2 flex items-center gap-2 text-xl text-teal-500">
                           <Tags
                             strokeWidth={1}
-                            size={26}
+                            size={24}
                             className="text-slate-500"
                           />
                           {cat}
@@ -245,14 +245,14 @@ export default function List() {
                               return (
                                 <li
                                   key={item.id}
-                                  className={`px-4 flex justify-between items-center rounded-lg border-b last:border-0 border-slate-600/50 hover:bg-slate-800/50 
+                                  className={`px-3 flex justify-between items-center rounded-lg border-b last:border-0 border-slate-600/50 hover:bg-slate-800/50 
                                     ${isSelected && 'bg-slate-800/30'}
                                     ${isSelected && loadingDel && 'opacity-50'}
                                   `}
                                 >
                                   <label
                                     htmlFor={item.id}
-                                    className="flex-1 py-4 cursor-pointer"
+                                    className="flex-1 py-3 cursor-pointer"
                                   >
                                     {item.name}
                                   </label>
@@ -260,12 +260,12 @@ export default function List() {
                                     disabled={loadingDel}
                                     id={item.id}
                                     onClick={toggleSelectedItem}
-                                    className="w-6 h-6 flex justify-center items-center border-2 border-slate-500 rounded-md data-[state=checked]:border-teal-500"
+                                    className="w-5 h-5 flex justify-center items-center border border-slate-500 rounded-md data-[state=checked]:border-teal-500"
                                   >
                                     <Checkbox.Indicator>
                                       <Check
-                                        size={18}
-                                        strokeWidth={3}
+                                        size={16}
+                                        strokeWidth={2}
                                         className="text-teal-500"
                                       />
                                     </Checkbox.Indicator>
