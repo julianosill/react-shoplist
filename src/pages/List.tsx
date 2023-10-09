@@ -35,6 +35,7 @@ import {
   ShoppingBasket,
   Tags,
   Trash2,
+  X,
 } from 'lucide-react'
 
 interface Product {
@@ -168,32 +169,35 @@ export default function List() {
 
   return (
     <div className="w-full min-h-screen bg-slate-700" onClick={handleClick}>
-      <main className="w-10/12 max-w-2xl min-h-screen mx-auto flex flex-col gap-4">
-        <header className="sticky top-0 flex justify-between items-center py-4 border-b-2 border-slate-600 bg-slate-700">
-          <img src={LogoH} alt="ShopList" className="w-40" />
+      <main className="w-10/12 max-w-2xl min-h-screen mx-auto flex flex-col gap-2">
+        <header
+          className={`
+            ${selectedItems.length > 0 && 'sticky top-0'}
+            flex justify-between items-center py-3 border-b-2 border-slate-600 bg-slate-700
+          `}
+        >
+          <img src={LogoH} alt="ShopList" className="w-36" />
           {selectedItems.length > 0 ? (
-            <button
+            <Button
               onClick={removeItems}
-              className={`w-8 h-8 flex justify-center items-center border-2 border-slate-400 text-slate-400 rounded-md hover:bg-teal-500 hover:text-white hover:border-teal-500 ${
-                loadingDel && 'opacity-50'
-              }`}
+              size={'xs'}
+              variant={'outlineDark'}
               disabled={loadingDel}
             >
               {loadingDel ? (
-                <RefreshCw size={20} className="animate-spin" />
+                <RefreshCw size={16} className="animate-spin" />
               ) : (
-                <Trash2 size={20} />
+                <Trash2 size={16} />
               )}
-            </button>
+            </Button>
           ) : (
-            <div>
-              <button
-                onClick={logout}
-                className="h-8 px-2 flex justify-center items-center gap-1 text-sm border border-slate-400 text-slate-400 rounded-md hover:text-teal-500 hover:border-teal-500"
-              >
-                Log out <LogOut size={18} />
-              </button>
-            </div>
+            <Button
+              onClick={logout}
+              content="Log out"
+              size={'xs'}
+              variant={'outlineDark'}
+              iconRight={() => <LogOut size={14} />}
+            />
           )}
         </header>
         {loadingList ? (
@@ -223,12 +227,12 @@ export default function List() {
                     return (
                       <div
                         key={cat}
-                        className="py-8 border-t-2 border-slate-600 first-of-type:border-none"
+                        className="py-6 border-t-2 border-slate-600 first-of-type:border-none"
                       >
-                        <h2 className="mb-2 flex items-center gap-2 text-2xl text-teal-500">
+                        <h2 className="mb-2 flex items-center gap-2 text-xl text-teal-500">
                           <Tags
                             strokeWidth={1}
-                            size={26}
+                            size={24}
                             className="text-slate-500"
                           />
                           {cat}
@@ -240,14 +244,14 @@ export default function List() {
                               return (
                                 <li
                                   key={item.id}
-                                  className={`px-4 flex justify-between items-center rounded-lg border-b last:border-0 border-slate-600/50 hover:bg-slate-800/50 
+                                  className={`px-3 flex justify-between items-center rounded-lg border-b last:border-0 border-slate-600/50 hover:bg-slate-800/50 
                                     ${isSelected && 'bg-slate-800/30'}
                                     ${isSelected && loadingDel && 'opacity-50'}
                                   `}
                                 >
                                   <label
                                     htmlFor={item.id}
-                                    className="flex-1 py-4 cursor-pointer"
+                                    className="flex-1 py-3 cursor-pointer"
                                   >
                                     {item.name}
                                   </label>
@@ -255,12 +259,12 @@ export default function List() {
                                     disabled={loadingDel}
                                     id={item.id}
                                     onClick={toggleSelectedItem}
-                                    className="w-6 h-6 flex justify-center items-center border-2 border-slate-500 rounded-md data-[state=checked]:border-teal-500"
+                                    className="w-5 h-5 flex justify-center items-center border border-slate-500 rounded-md data-[state=checked]:border-teal-500"
                                   >
                                     <Checkbox.Indicator>
                                       <Check
-                                        size={18}
-                                        strokeWidth={3}
+                                        size={16}
+                                        strokeWidth={2}
                                         className="text-teal-500"
                                       />
                                     </Checkbox.Indicator>
@@ -276,8 +280,8 @@ export default function List() {
               </section>
             )}
 
-            <section className="mb-8 p-10 rounded-xl bg-white">
-              <form onSubmit={addItem} className="flex flex-col gap-4">
+            <section className="mt-4 mb-8">
+              <form onSubmit={addItem} className="flex flex-col gap-3">
                 <Input
                   ref={productRef}
                   name="name"
@@ -285,7 +289,9 @@ export default function List() {
                   value={product.name}
                   onChange={handleChangeInput}
                   placeholder="Item"
-                  icon={() => <ShoppingBasket />}
+                  icon={() => <ShoppingBasket size={22} />}
+                  theme="dark"
+                  dimension="sm"
                 />
                 <div className="w-full relative">
                   <Input
@@ -298,16 +304,26 @@ export default function List() {
                       setCategoryFocus(true)
                     }}
                     placeholder="Category"
-                    icon={() => <Tags />}
+                    icon={() => <Tags size={22} />}
                     autoComplete="off"
+                    theme="dark"
+                    dimension="sm"
                   />
                   {categoryFocus && filteredCategories.length > 0 && (
-                    <ul className="absolute w-full bottom-14 p-4 text-slate-700 rounded-lg shadow-lg bg-white">
+                    <ul className="absolute w-full bottom-12 p-3 text-white rounded-lg shadow-lg bg-slate-600">
+                      <button
+                        onClick={() => {
+                          setCategoryFocus(false)
+                        }}
+                        className="absolute -right-2 -top-2 p-1 rounded-full bg-slate-500 hover:bg-teal-500"
+                      >
+                        <X size={14} />
+                      </button>
                       {filteredCategories.map((item) => {
                         return (
                           <li
                             key={item}
-                            className="px-3 py-2 rounded-md cursor-pointer hover:bg-teal-500 hover:text-white"
+                            className="px-3 py-2 rounded-md text-sm hover:bg-teal-500 cursor-pointer"
                             onClick={() => {
                               setProduct({ ...product, category: item })
                               setCategoryFocus(false)
@@ -321,15 +337,15 @@ export default function List() {
                   )}
                 </div>
                 {error && <ErrorMessage message={error} warning={true} />}
-                <Button width="w-full" disabled={loadingAdd}>
+                <Button width="w-full" size="sm" disabled={loadingAdd}>
                   {loadingAdd ? (
                     <>
-                      <RefreshCw size={22} className="animate-spin" />
+                      <RefreshCw size={18} className="animate-spin" />
                       Adding item...
                     </>
                   ) : (
                     <>
-                      <PlusCircle />
+                      <PlusCircle size={20} />
                       Add item
                     </>
                   )}
