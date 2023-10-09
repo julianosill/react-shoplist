@@ -128,8 +128,9 @@ export default function List() {
       created: new Date(),
     })
       .then(() => {
-        setProduct({ name: '', category: '' })
         loadList()
+        setProduct({ name: '', category: '' })
+        productRef.current?.focus()
       })
       .catch((error) => {
         console.log(error)
