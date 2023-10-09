@@ -169,29 +169,34 @@ export default function List() {
   return (
     <div className="w-full min-h-screen bg-slate-700" onClick={handleClick}>
       <main className="w-10/12 max-w-2xl min-h-screen mx-auto flex flex-col gap-4">
-        <header className="sticky top-0 flex justify-between items-center py-4 border-b-2 border-slate-600 bg-slate-700">
-          <img src={LogoH} alt="ShopList" className="w-40" />
+        <header
+          className={`
+            ${selectedItems.length > 0 && 'sticky top-0'}
+            flex justify-between items-center py-3 border-b-2 border-slate-600 bg-slate-700
+          `}
+        >
+          <img src={LogoH} alt="ShopList" className="w-36" />
           {selectedItems.length > 0 ? (
             <button
               onClick={removeItems}
-              className={`w-8 h-8 flex justify-center items-center border-2 border-slate-400 text-slate-400 rounded-md hover:bg-teal-500 hover:text-white hover:border-teal-500 ${
+              className={`w-7 h-7 flex justify-center items-center border border-slate-400 text-slate-400 rounded-md hover:bg-teal-500 hover:text-white hover:border-teal-500 ${
                 loadingDel && 'opacity-50'
               }`}
               disabled={loadingDel}
             >
               {loadingDel ? (
-                <RefreshCw size={20} className="animate-spin" />
+                <RefreshCw size={18} className="animate-spin" />
               ) : (
-                <Trash2 size={20} />
+                <Trash2 size={18} />
               )}
             </button>
           ) : (
             <div>
               <button
                 onClick={logout}
-                className="h-8 px-2 flex justify-center items-center gap-1 text-sm border border-slate-400 text-slate-400 rounded-md hover:text-teal-500 hover:border-teal-500"
+                className="h-7 px-2 flex justify-center items-center gap-1 text-xs border border-slate-400 text-slate-400 rounded-md hover:text-teal-500 hover:border-teal-500"
               >
-                Log out <LogOut size={18} />
+                Log out <LogOut size={14} />
               </button>
             </div>
           )}
