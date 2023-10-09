@@ -35,6 +35,7 @@ import {
   ShoppingBasket,
   Tags,
   Trash2,
+  X,
 } from 'lucide-react'
 
 interface Product {
@@ -310,6 +311,14 @@ export default function List() {
                   />
                   {categoryFocus && filteredCategories.length > 0 && (
                     <ul className="absolute w-full bottom-12 p-3 text-white rounded-lg shadow-lg bg-slate-600">
+                      <button
+                        onClick={() => {
+                          setCategoryFocus(false)
+                        }}
+                        className="absolute -right-2 -top-2 p-1 rounded-full bg-slate-500 hover:bg-teal-500"
+                      >
+                        <X size={14} />
+                      </button>
                       {filteredCategories.map((item) => {
                         return (
                           <li
