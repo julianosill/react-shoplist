@@ -177,28 +177,26 @@ export default function List() {
         >
           <img src={LogoH} alt="ShopList" className="w-36" />
           {selectedItems.length > 0 ? (
-            <button
+            <Button
               onClick={removeItems}
-              className={`w-7 h-7 flex justify-center items-center border border-slate-400 text-slate-400 rounded-md hover:bg-teal-500 hover:text-white hover:border-teal-500 ${
-                loadingDel && 'opacity-50'
-              }`}
+              size={'xs'}
+              variant={'outlineDark'}
               disabled={loadingDel}
             >
               {loadingDel ? (
-                <RefreshCw size={18} className="animate-spin" />
+                <RefreshCw size={16} className="animate-spin" />
               ) : (
-                <Trash2 size={18} />
+                <Trash2 size={16} />
               )}
-            </button>
+            </Button>
           ) : (
-            <div>
-              <button
-                onClick={logout}
-                className="h-7 px-2 flex justify-center items-center gap-1 text-xs border border-slate-400 text-slate-400 rounded-md hover:text-teal-500 hover:border-teal-500"
-              >
-                Log out <LogOut size={14} />
-              </button>
-            </div>
+            <Button
+              onClick={logout}
+              content="Log out"
+              size={'xs'}
+              variant={'outlineDark'}
+              iconRight={() => <LogOut size={14} />}
+            />
           )}
         </header>
         {loadingList ? (
@@ -281,8 +279,8 @@ export default function List() {
               </section>
             )}
 
-            <section className="mb-8 p-10 rounded-xl bg-white">
-              <form onSubmit={addItem} className="flex flex-col gap-4">
+            <section className="mt-4 mb-8">
+              <form onSubmit={addItem} className="flex flex-col gap-3">
                 <Input
                   ref={productRef}
                   name="name"
@@ -290,7 +288,9 @@ export default function List() {
                   value={product.name}
                   onChange={handleChangeInput}
                   placeholder="Item"
-                  icon={() => <ShoppingBasket />}
+                  icon={() => <ShoppingBasket size={22} />}
+                  theme="dark"
+                  dimension="sm"
                 />
                 <div className="w-full relative">
                   <Input
@@ -303,16 +303,18 @@ export default function List() {
                       setCategoryFocus(true)
                     }}
                     placeholder="Category"
-                    icon={() => <Tags />}
+                    icon={() => <Tags size={22} />}
                     autoComplete="off"
+                    theme="dark"
+                    dimension="sm"
                   />
                   {categoryFocus && filteredCategories.length > 0 && (
-                    <ul className="absolute w-full bottom-14 p-4 text-slate-700 rounded-lg shadow-lg bg-white">
+                    <ul className="absolute w-full bottom-12 p-3 text-white rounded-lg shadow-lg bg-slate-600">
                       {filteredCategories.map((item) => {
                         return (
                           <li
                             key={item}
-                            className="px-3 py-2 rounded-md cursor-pointer hover:bg-teal-500 hover:text-white"
+                            className="px-3 py-2 rounded-md text-sm hover:bg-teal-500 cursor-pointer"
                             onClick={() => {
                               setProduct({ ...product, category: item })
                               setCategoryFocus(false)
@@ -326,15 +328,15 @@ export default function List() {
                   )}
                 </div>
                 {error && <ErrorMessage message={error} warning={true} />}
-                <Button width="w-full" disabled={loadingAdd}>
+                <Button width="w-full" size="sm" disabled={loadingAdd}>
                   {loadingAdd ? (
                     <>
-                      <RefreshCw size={22} className="animate-spin" />
+                      <RefreshCw size={18} className="animate-spin" />
                       Adding item...
                     </>
                   ) : (
                     <>
-                      <PlusCircle />
+                      <PlusCircle size={20} />
                       Add item
                     </>
                   )}
